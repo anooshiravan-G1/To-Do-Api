@@ -80,7 +80,7 @@ namespace To_Do_Api.Controllers
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResponseDTO>> Login(LoginModelDTO model)
+        public async Task<ActionResult<AuthResponseDTO>> Login([FromBody] LoginModelDTO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)

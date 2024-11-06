@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using To_Do_Api.Data;
 using System.Text;
 using To_Do_Api.Helpers;
+using To_Do_Api.Configurations;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +20,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
@@ -36,8 +37,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
+        ValidIssuer = "To_Do_Api", 
+        ValidAudience = "To_Do_Api", 
         IssuerSigningKey = new SymmetricSecurityKey(key),
     };
 });
@@ -46,6 +47,8 @@ builder.Services.AddScoped<TokenGenerator>();
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
+
+builder.Services.AddSwaggerConfiguration();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
